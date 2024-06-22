@@ -1,0 +1,137 @@
+
+create or replace function trig_insert_into_participant()
+returns trigger
+language plpgsql
+as $$
+declare 
+	username1 text;
+begin
+	select username into username1 from users where new.user_id=user_id;
+	execute format('create or replace view %I as select * from participant where user_id=%L','participant_'||''||username1,new.user_id);
+	execute format('create or replace view %I as select * from registration where participant_id in (select participant_id from participant where user_id=%L)','registration_'||''||username1,new.user_id);
+
+
+	execute format('grant select on %I to %I','participant_'||''||username1,username1);
+	execute format('grant select,insert on %I to %I','registration_'||''||username1,username1);
+	
+	execute format('grant super_participant to %I',username1);
+	return new;
+end;
+$$;
+
+create or replace trigger participant_insert
+after insert 
+on participant
+for each row
+execute procedure trig_insert_into_participant();
+
+-- \\\\\\\\\\\\\\\\\\\\\\
+
+-- //////////// Trigger for sponsor role and insert
+
+create or replace function trig_insert_into_sponsorship()
+returns trigger
+language plpgsql
+as $$
+declare 
+	username1 text;
+begin
+	select username into username1 from users where new.sponsor_id=user_id;
+	execute format('create or replace view %I as select * from sponsorship where sponsor_id=%L','sponsorship_'||''||username1,new.sponsor_id);
+	execute format('grant select,update on %I to %I','sponsorship_'||''||username1,username1);
+
+	execute format('grant super_sponsor to %I',username1);
+
+	return new;
+end;
+$$;
+
+create or replace trigger sponsorship_insert
+after insert
+on sponsorship
+for each row
+execute procedure trig_insert_into_sponsorship();
+-- runned
+-- \\\\\\\\\\\\\\\\\\\\\\
+
+-- /////////// trigger for event organiser role and insert
+
+create or replace function trig_insert_into_event()
+returns trigger
+language plpgsql
+as $$
+declare 
+	username1 text;
+begin
+	select username into username1 from users where new.organizer_id=user_id;
+	execute format('create or replace view %I as select * from event where organizer_id = %L','event_'||''||username1,new.organizer_id);
+	execute format('create or replace view %I as select * from registration where event_id in (select event_id from event where organizer_id = %L)','eventregistration_'||''||username1,new.organizer_id);
+	execute format('create or replace view %I as select * from performance where event_id in (select event_id from event where organizer_id = %L)','eventperformance_'||''||username1,new.organizer_id);
+
+	execute format('grant select,update on %I to %I','event_'||''||username1,username1);
+	execute format('grant select on %I to %I','eventregistration_'||''||username1,username1);
+	execute format('grant select,insert,update,delete on %I to %I','eventperformance_'||''||username1,username1);
+	
+	execute format('grant super_event_organizer to %I',username1);
+	return new;
+end;
+$$;
+
+create or replace trigger event_insert
+after insert
+on event
+for each row 
+execute procedure trig_insert_into_event();
+-- runned
+-- \\\\\\\\\\\\\\\\\\\\\\\\\\
+
+-- //////// trigger for fest organiser role and insert
+
+create or replace function trig_insert_into_fest()
+returns trigger
+language plpgsql
+as $$
+declare 
+	username1 text;
+begin
+	select username into username1 from users where new.organizer_id=user_id;
+	execute format('create or replace view %I as select * from fest where organizer_id = %L','fest_'||''||username1,new.organizer_id);
+	execute format('create or replace view %I as select * from event where fest_id in (select fest_id from fest where organizer_id=%L)','festevent_'||''||username1,new.organizer_id);
+	execute format('create or replace view %I as select * from sponsorship where fest_id in (select fest_id from fest where organizer_id=%L)','festsponsors_'||''||username1,new.organizer_id);
+
+	execute format('grant select,update on %I to %I','fest_'||''||username1,username1);
+	execute format('grant select,update,insert on %I to %I','festevent_'||''||username1,username1);
+	execute format('grant select,delete,update on %I to %I','festsponsors_'||''||username1,username1);
+
+	execute format('grant super_fest_organizer to %I',username1);
+	return new;
+end;
+$$;
+
+create or replace trigger fest_insert
+after insert
+on fest
+for each row
+execute procedure trig_insert_into_fest();
+-- runned
+-- \\\\\\\\\\\\\\\\\\\\\\\\
+
+-- trigger for performer role and insert
+create or replace function trig_insert_into_performer()
+returns trigger
+language plpgsql
+as $$
+declare 
+	username1 text;
+begin
+	select username into username1 from users where new.user_id=user_id;
+	execute format('create or replace view %I as select * from performer where user_id = %L','performer_'||''||username1,new.user_id);
+	execute format('create or replace view %I as select * from performance where performer_id in (select performer_id from performer where user_id = %L)','performance_'||''||username1,new.user_id);
+	
+	execute format('grant select,update on %I to %I','performer_'||''||username1,username1);
+	execute format('grant select on %I to %I','performance_'||''||username1,username1);
+
+	execute format('grant super_performer to %I',username1);
+	return new;
+end;
+$$;
