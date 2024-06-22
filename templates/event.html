@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+<body>
+    <form action="/event" method="POST">
+        <section class="h-100 h-custom" style="background-color: #8fc4b7;">
+            <div class="container py-5 h-100">
+              <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-8 col-xl-6">
+                  <div class="card rounded-3">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img3.webp"
+                      class="w-100" style="border-top-left-radius: .3rem; border-top-right-radius: .3rem;"
+                      alt="Sample photo">
+                    <div class="card-body p-4 p-md-5">
+                      <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Performace Tracks</h3>
+                    
+                      <form class="px-md-2">
+                        <p>INSERT START TIME AND END TIME IN FORMAT :- 'yyyy-mm-dd hh-mm-ss'</p>
+                        <div data-mdb-input-init class="form-outline mb-4">
+                          <input type="text" id="eventname" name="eventname" class="form-control" />
+                          <label class="form-label" for="eventname">event Name</label>
+                        </div>
+          
+                        <div class="row mb-4 pb-2 pb-md-0 mb-md-5">
+                          <div class="col-md-6">
+          
+                            <div data-mdb-input-init class="form-outline">
+                              <input type="text" id="perfomer" name="performer" class="form-control" />
+                              <label class="form-label" for="perfomer">Performer Stage Name</label>
+                            </div>
+          
+                          </div>
+                        </div>
+
+                        <div class="row mb-4 pb-2 pb-md-0 mb-md-5">
+                          <div class="col-md-6">
+          
+                            <div data-mdb-input-init class="form-outline">
+                              <input type="text" id="stime" name="stime" class="form-control" />
+                              <label class="form-label" for="stime">Start_time</label>
+                            </div>
+          
+                          </div>
+                        </div>
+
+                        <div class="row mb-4 pb-2 pb-md-0 mb-md-5">
+                          <div class="col-md-6">
+          
+                            <div data-mdb-input-init class="form-outline">
+                              <input type="text" id="etime" name="etime" class="form-control" />
+                              <label class="form-label" for="etime" name="etime">End_Time</label>
+                            </div>
+          
+                          </div>
+                        </div>
+
+                        <div class="row mb-4 pb-2 pb-md-0 mb-md-5">
+                          <div class="col-md-6">
+          
+                            <div data-mdb-input-init class="form-outline">
+                              <input type="text" id="cost" name="cost" class="form-control" />
+                              <label class="form-label" for="cost">Cost</label>
+                            </div>
+          
+                          </div>
+                        </div>
+          
+                        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-lg mb-1">Submit</button>
+          
+                      </form>
+          
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+    </form>
+</body>
+</html>
