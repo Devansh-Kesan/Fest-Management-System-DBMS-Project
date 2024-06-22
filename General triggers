@@ -1,0 +1,80 @@
+create or replace function insert_users()
+returns trigger
+language plpgsql
+as $$
+declare roll_name text;
+begin 
+	select name into roll_name from role where role_id = new.role_id;
+	
+	execute format('create role %I login password %L',new.username,new.password);
+	return new;
+end;
+$$;
+
+create or replace trigger user_insert
+after insert on users
+for each row
+execute procedure insert_users();
+
+-- runned
+
+-- trigger to update participant of event as new registration is done
+create or replace function update_participation()
+returns trigger
+language plpgsql
+as $$
+declare
+begin
+	update event
+	set participation = participation + 1
+	where event_id = new.event_id;
+	return new;
+end;
+$$;
+
+create or replace trigger inser_registration
+after insert
+on registration
+for each row
+execute procedure update_participation()
+
+drop trigger inser_registration on registration;
+
+
+
+-- trigger for updating the budget of the fest whenever the new sponsor is added
+create or replace function update_budget()
+returns trigger
+language plpgsql
+as $$
+declare
+begin
+	update fest
+	set budget = budget + new.amount
+	where fest_id = new.fest_id;
+	return new;
+end;
+$$;
+
+create or replace trigger upd_budget
+after insert on sponsorship
+for each row
+execute procedure update_budget();
+
+create or replace function update1_budget()
+returns trigger
+language plpgsql
+as $$
+declare
+begin
+	update fest
+	set budget = budget + new.amount - old.amount
+	where fest_id = new.fest_id;
+	return new;
+end;
+$$;
+
+create or replace trigger upd1_budget
+after update on sponsorship
+for each row
+execute procedure update1_budget();
