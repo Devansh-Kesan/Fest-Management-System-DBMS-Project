@@ -281,3 +281,6 @@ select top_sponsor(1)
 select top_event(2)
 select top_event('festevent_bob_williams',1)
 select * from festevent_john_doe;
+
+-- drop function locations_performance
+select locations_performance(1)
