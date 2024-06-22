@@ -1,0 +1,109 @@
+-- create or replace procedure shift_fest_date(
+-- new_start_date date,
+-- fest1_id int
+-- )
+-- language plpgsql
+-- as $$
+-- declare
+-- 	prev_start_date date;
+-- 	days_shift int;
+-- begin
+-- 	select start_date into prev_start_date 
+-- 	from fest 
+-- 	where fest_id = fest1_id;
+	
+-- 	days_shift = new_start_date::date - prev_start_date::date;
+-- 	update fest
+-- 	set start_date = start_date + days_shift
+-- 	where fest_id = fest1_id;
+	
+-- 	update fest
+-- 	set end_date = end_date + days_shift
+-- 	where fest_id = fest1_id;
+	
+-- 	update event
+-- 	set start_date = start_date + days_shift
+-- 	where fest_id=fest1_id;
+	
+-- 	update event
+-- 	set end_date = end_date + days_shift
+-- 	where fest_id=fest1_id;
+	
+-- 	update performance
+-- 	set start_time = start_time + interval '1 day' * days_shift
+-- 	where performance.event_id in (select event.event_id from event where event.fest_id=fest1_id);
+	
+-- 	update performance
+-- 	set end_time = end_time + interval '1 day' * days_shift
+-- 	where performance.event_id in (select event.event_id from event where event.fest_id=fest1_id);
+	
+-- 	commit;
+-- end;
+-- $$;
+
+CREATE OR REPLACE PROCEDURE shift_fest_date(
+    new_start_date DATE,
+    fest_table_name TEXT,
+    event_table_name TEXT,
+    fest_id INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    prev_start_date DATE;
+    days_shift INT;
+BEGIN
+    EXECUTE FORMAT('
+        SELECT start_date 
+        FROM %I 
+        WHERE fest_id = $1', fest_table_name)
+    INTO prev_start_date
+    USING fest_id;
+
+    days_shift := new_start_date - prev_start_date;
+
+    EXECUTE FORMAT('
+        UPDATE %I 
+        SET start_date = start_date + $1 
+        WHERE fest_id = $2', fest_table_name)
+    USING days_shift, fest_id;
+
+    EXECUTE FORMAT('
+        UPDATE %I 
+        SET end_date = end_date + $1 
+        WHERE fest_id = $2', fest_table_name)
+    USING days_shift, fest_id;
+
+    EXECUTE FORMAT('
+        UPDATE %I 
+        SET start_date = start_date + $1 
+        WHERE fest_id = $2', event_table_name)
+    USING days_shift, fest_id;
+
+    EXECUTE FORMAT('
+        UPDATE %I 
+        SET end_date = end_date + $1 
+        WHERE fest_id = $2', event_table_name)
+    USING days_shift, fest_id;
+
+    EXECUTE FORMAT('
+        UPDATE %I 
+        SET start_time = start_time + interval ''1 day'' * $1 
+        WHERE event_id IN (
+            SELECT event_id FROM %I 
+            WHERE fest_id = $2
+        )', 'performance', event_table_name)
+    USING days_shift, fest_id;
+
+    EXECUTE FORMAT('
+        UPDATE %I 
+        SET end_time = end_time + interval ''1 day'' * $1 
+        WHERE event_id IN (
+            SELECT event_id FROM %I 
+            WHERE fest_id = $2
+        )', 'performance', event_table_name)
+    USING days_shift, fest_id;
+
+    COMMIT;
+END;
+$$;
