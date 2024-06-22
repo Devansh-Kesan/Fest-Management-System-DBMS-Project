@@ -1,0 +1,145 @@
+-- Functions for different roles :
+-- for participant
+-- 1. give the list of all events in which the participant is registered
+CREATE OR REPLACE FUNCTION registered_events(
+    user_id INT,
+    participant_table_name TEXT,
+    registration_table_name TEXT
+)
+RETURNS TABLE (
+    event_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY EXECUTE FORMAT('
+        SELECT DISTINCT e.name
+        FROM %I AS p
+        INNER JOIN %I AS r ON p.participant_id = r.participant_id
+        INNER JOIN %I AS e ON r.event_id = e.event_id
+        WHERE p.user_id = $1', participant_table_name, registration_table_name, 'event')
+    USING user_id;
+END;
+$$;
+
+select registered_events(10,'participant_amy_taylor','registration_amy_taylor');
+
+drop function registered_events;
+select registered_events(10);
+
+-- for performer 
+-- 1 function to find locations at which the performer has performed.
+CREATE OR REPLACE FUNCTION locations_performance(
+    performer_id INT,
+    performance_table_name TEXT
+)
+RETURNS TABLE (
+    location_name VARCHAR,
+    address VARCHAR,
+    city VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY EXECUTE FORMAT('
+        SELECT DISTINCT loc.name, loc.address, loc.city
+        FROM %I AS loc
+        INNER JOIN %I AS v ON loc.location_id = v.location_id
+        INNER JOIN %I AS e ON v.venue_id = e.venue_id
+        INNER JOIN %I AS p ON e.event_id = p.event_id
+        WHERE p.performer_id = $1', 'location', 'venue', 'event', performance_table_name)
+    USING performer_id;
+END;
+$$;
+
+select locations_performance(1,'performance_david_clark');
+
+-- 2.what are events in which performers has to perform between two given dates
+CREATE OR REPLACE FUNCTION events_to_perform(
+    user_id INT,
+    start_date DATE,
+    end_date DATE,
+    performance_table_name TEXT,
+    performer_table_name TEXT
+)
+RETURNS TABLE (
+    event_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY EXECUTE FORMAT('
+        SELECT ev.name
+        FROM %I AS p
+        INNER JOIN %I AS per ON p.performer_id = per.performer_id
+        INNER JOIN %I AS ev ON p.event_id = ev.event_id
+        WHERE %s <= p.start_time::date
+            AND p.end_time::date <= %s
+            AND per.user_id = $1', performance_table_name, performer_table_name, 'event', quote_literal(start_date), quote_literal(end_date))
+    USING user_id;
+END;
+$$;
+
+select events_to_perform(8,'2024-07-15','2024-07-20','performance_lisa_anderson','performer_lisa_anderson');
+
+select events_to_perform(8,'2024-07-18','2024-07-20');
+
+-- 3. total earning of a performer from a fest
+
+
+-- for sponsor
+-- 1. what are the fest sponsored by sponosor with their sponsor_level
+CREATE OR REPLACE FUNCTION fest_sponsored(
+    sponsor_id INT,
+    sponsorship_table_name TEXT
+)
+RETURNS TABLE (
+    fest_name VARCHAR,
+    sponsor_level VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY EXECUTE FORMAT('
+        SELECT f.name, sl.name
+        FROM %I AS f
+        INNER JOIN %I AS sp ON f.fest_id = sp.fest_id
+        INNER JOIN %I AS sl ON sp.sponsor_level_id = sl.sponsor_level_id
+        WHERE sp.sponsor_id = $1', 'fest', sponsorship_table_name, 'sponsor_level')
+    USING sponsor_id;
+END;
+$$;
+
+select fest_sponsored(14,'sponsorship_sophia_lee');
+
+select fest_sponsored(14);
+
+-- for event organizer
+-- 1. all the performers performing in his event 
+CREATE OR REPLACE FUNCTION performers_performing(
+    event_organizer INT,
+    event_table_name TEXT,
+    performance_table_name TEXT
+)
+RETURNS TABLE (
+    event_name VARCHAR,
+    performer_name VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY EXECUTE FORMAT('
+        SELECT e.name, perf.stage_name
+        FROM %I AS e
+        INNER JOIN %I AS per ON e.event_id = per.event_id
+        INNER JOIN %I AS perf ON per.performer_id = perf.performer_id
+        WHERE e.organizer_id = $1', event_table_name, performance_table_name, 'performer')
+    USING event_organizer;
+END;
+$$;
+
+select performers_performing(7,'event_bob_johnson','eventperformance_bob_johnson');
+
+select performers_performing(3);
+
+call shift_fest_date('2024-07-15',1)
