@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Navbar</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">logout</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/register">Sign Up</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <form action="/participant" method="POST">
+    <section class="h-100 bg-dark">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+              <div class="card card-registration my-4">
+                <div class="row g-0">
+                  <div class="col-xl-6 d-none d-xl-block">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/img4.webp"
+                      alt="Sample photo" class="img-fluid"
+                      style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                  </div>
+                  <div class="col-xl-6">
+                    <div class="card-body p-md-5 text-black">
+                      <h3 class="mb-5 text-uppercase">Participant registration form</h3>
+      
+                      <div class="row">
+                        <div class="col-md-6 mb-4">
+                          <div data-mdb-input-init class="form-outline">
+                            <input type="text" id="user_name" name="user_name" class="form-control form-control-lg" />
+                            <label class="form-label" for="user_name">User name</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 mb-4">
+                          <div data-mdb-input-init class="form-outline">
+                            <input type="text" id="event_name" name="event_name" class="form-control form-control-lg" />
+                            <label class="form-label" for="event_name">Event name</label>
+                          </div>
+                        </div>
+                      </div>
+      
+      
+                      <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="text" id="form3Example8" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example8">Address</label>
+                      </div>
+      
+                      <div class="d-md-flex justify-content-start align-items-center mb-4 py-2">
+      
+                        <h6 class="mb-0 me-4">Gender: </h6>
+      
+                        <div class="form-check form-check-inline mb-0 me-4">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
+                            value="option1" />
+                          <label class="form-check-label" for="femaleGender">Female</label>
+                        </div>
+      
+                        <div class="form-check form-check-inline mb-0 me-4">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
+                            value="option2" />
+                          <label class="form-check-label" for="maleGender">Male</label>
+                        </div>
+      
+                        <div class="form-check form-check-inline mb-0">
+                          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
+                            value="option3" />
+                          <label class="form-check-label" for="otherGender">Other</label>
+                        </div>
+      
+                      </div>
+      
+                      <div class="row">
+                        <div class="col-md-6 mb-4">
+      
+                          <select data-mdb-select-init>
+                            <option value="1">City</option>
+                            <option value="2">Mumbai</option>
+                            <option value="3">Pune</option>
+                            <option value="4">Nashik</option>
+                          </select>
+      
+                        </div>
+                        <div class="col-md-6 mb-4">
+      
+                          <select data-mdb-select-init>
+                            <option value="1">State</option>
+                            <option value="2">Maharashtra</option>
+                            <option value="3">Kerela</option>
+                            <option value="4">Rajasthan</option>
+                          </select>
+      
+                        </div>
+                      </div>
+    
+      
+                      <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="date" id="registration_date" name="registration_date" class="form-control form-control-lg" />
+                        <label class="form-label" for="registration_date">Registration_date</label>
+                      </div>
+
+                      <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="text" id="payment_method" name="payment_method" class="form-control form-control-lg" />
+                        <label class="form-label" for="payment_method">Payment_Method</label>
+                      </div>
+
+                      <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="text" id="payment_status" name="payment_status" class="form-control form-control-lg" />
+                        <label class="form-label" for="payment_status">Payment_Status</label>
+                      </div>
+      
+                      <div class="d-flex justify-content-end pt-3">
+                        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg ms-2">Submit form</button>
+                      </div>
+      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
+
+</body>
+</html>
