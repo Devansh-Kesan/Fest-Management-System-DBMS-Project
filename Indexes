@@ -1,0 +1,17 @@
+-- INDEXES
+
+CREATE INDEX idx_users_user_id_hash ON users USING hash (user_id);
+
+CREATE INDEX idx_role_role_id_hash ON role USING hash (role_id);
+
+CREATE INDEX idx_event_fest_id_event_id ON event (fest_id, event_id);
+
+CREATE INDEX idx_registration_event_id ON registration USING hash (event_id);
+
+CREATE INDEX idx_sponsorship_fest_id ON sponsorship USING hash (fest_id);
+
+CREATE INDEX idx_participant_fest_id ON participant USING hash (fest_id);
+
+CREATE INDEX idx_fest_fest_id ON fest USING hash (fest_id);
+
+CREATE INDEX idx_performance_event_id ON performance USING BTREE(event_id);
