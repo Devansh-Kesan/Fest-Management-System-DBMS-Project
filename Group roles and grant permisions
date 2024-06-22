@@ -1,0 +1,78 @@
+-- group roles :
+-- 1. super_participant
+
+grant select(location_id,name,address,city,state,country) on location to super_participant;
+grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_participant;
+
+grant select(event_id,fest_id,name,start_date,end_date,venue_id,description,ticket_price) on event to super_participant;
+
+grant select(venue_id,name,location_id) on venue to super_participant;
+
+grant select(performance_id,event_id,performer_id,start_time,end_time) on performance to super_participant;
+
+grant select(performer_id,stage_name,genre,bio) on performer to super_participant;
+
+grant select(user_id,username,first_name,last_name) on users to super_participant;
+
+-- 2. super_sponsor
+grant select on sponsor_level to super_sponsor;
+
+grant select(location_id,name,address,city,state,country) on location to super_sponsor;
+
+grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_sponsor;
+
+grant select(event_id,fest_id,name,start_date,end_date,venue_id,description,ticket_price) on event to super_sponsor;
+
+grant select(venue_id,name,location_id) on venue to super_sponsor;
+
+grant select(performance_id,event_id,performer_id,start_time,end_time) on performance to super_sponsor;
+
+grant select(performer_id,stage_name,genre,bio) on performer to super_sponsor;
+
+grant select(user_id,username,first_name,last_name) on users to super_sponsor;
+
+
+
+-- 3. super_event_organizer
+grant select,update on venue to super_event_organiser;
+grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_event_organizer;
+grant select(location_id,name,address,city,state,country) on location to super_event_organizer;
+grant select(performer_id,stage_name,genre,bio) on performer to super_event_organizer;
+
+grant select(user_id,username,first_name,last_name) on users to super_event_organizer;
+
+grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_event_organizer;
+
+
+grant select(user_id,username,first_name,last_name) on users to super_event_organizer;
+
+
+-- 4. super_fest_organizer
+grant select on location to super_fest_organizer;
+grant select,update,insert on venue to super_fest_organizer;
+grant select on role to super_fest_organizer;
+grant select,update,insert on sponsor_level to super_fest_organizer;
+grant select on participant to super_fest_organizer;
+grant select,update on performance to super_fest_organizer;
+grant select on registration to super_fest_organizer;
+grant select,insert on performer to super_fest_organizer;
+
+grant select(event_id,fest_id,name,start_date,end_date,venue_id,description,ticket_price) on event to super_fest_organizer;
+
+grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_fest_organizer;
+
+
+grant select(user_id,username,first_name,last_name) on users to super_fest_organizer;
+
+-- 5. super_performer
+grant select(location_id,name,address,city,state,country) on location to super_performer;
+
+grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_performer;
+
+grant select(event_id,fest_id,name,start_date,end_date,venue_id,description,ticket_price) on event to super_performer;
+
+grant select(venue_id,name,location_id) on venue to super_performer;
+
+grant select(performance_id,event_id,performer_id,start_time,end_time) on performance to super_performer;
+
+grant select(user_id,username,first_name,last_name) on users to super_performer;
