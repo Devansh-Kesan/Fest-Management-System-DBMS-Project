@@ -1,0 +1,265 @@
+-- ALTER TABLE ONLY public.event
+--     ADD CONSTRAINT event_pkey PRIMARY KEY (event_id);
+
+
+--
+-- TOC entry 4742 (class 2606 OID 17866)
+-- Name: fest fest_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+-- ALTER TABLE ONLY public.fest
+--     ADD CONSTRAINT fest_pkey PRIMARY KEY (fest_id);
+
+
+--
+-- TOC entry 4736 (class 2606 OID 17818)
+-- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+-- ALTER TABLE ONLY public.location
+--     ADD CONSTRAINT location_pkey PRIMARY KEY (location_id);
+
+
+--
+-- TOC entry 4746 (class 2606 OID 17893)
+-- Name: participant participant_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.participant
+    ADD CONSTRAINT participant_pkey PRIMARY KEY (participant_id);
+
+
+--
+-- TOC entry 4754 (class 2606 OID 17994)
+-- Name: performance performance_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.performance
+    ADD CONSTRAINT performance_pkey PRIMARY KEY (performance_id);
+
+
+--
+-- TOC entry 4744 (class 2606 OID 17883)
+-- Name: performer performer_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.performer
+    ADD CONSTRAINT performer_pkey PRIMARY KEY (performer_id);
+
+
+--
+-- TOC entry 4756 (class 2606 OID 18011)
+-- Name: registration registration_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registration_pkey PRIMARY KEY (registration_id);
+
+
+--
+-- TOC entry 4734 (class 2606 OID 17806)
+-- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.role
+    ADD CONSTRAINT role_pkey PRIMARY KEY (role_id);
+
+
+--
+-- TOC entry 4748 (class 2606 OID 17927)
+-- Name: sponsor_level sponsor_level_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sponsor_level
+    ADD CONSTRAINT sponsor_level_pkey PRIMARY KEY (sponsor_level_id);
+
+
+--
+-- TOC entry 4750 (class 2606 OID 17951)
+-- Name: sponsorship sponsorship_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sponsorship
+    ADD CONSTRAINT sponsorship_pkey PRIMARY KEY (sponsorship_id);
+
+
+--
+-- TOC entry 4740 (class 2606 OID 17854)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 4738 (class 2606 OID 17825)
+-- Name: venue venue_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.venue
+    ADD CONSTRAINT venue_pkey PRIMARY KEY (venue_id);
+
+
+--
+-- TOC entry 4767 (class 2606 OID 17975)
+-- Name: event event_fest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.event
+    ADD CONSTRAINT event_fest_id_fkey FOREIGN KEY (fest_id) REFERENCES public.fest(fest_id);
+
+
+--
+-- TOC entry 4768 (class 2606 OID 17985)
+-- Name: event event_organiser_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.event
+    ADD CONSTRAINT event_organiser_id_fkey FOREIGN KEY (organiser_id) REFERENCES public.users(user_id);
+
+
+--
+-- TOC entry 4769 (class 2606 OID 17980)
+-- Name: event event_venue_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.event
+    ADD CONSTRAINT event_venue_id_fkey FOREIGN KEY (venue_id) REFERENCES public.venue(venue_id);
+
+
+--
+-- TOC entry 4759 (class 2606 OID 17867)
+-- Name: fest fest_location_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fest
+    ADD CONSTRAINT fest_location_id_fkey FOREIGN KEY (location_id) REFERENCES public.location(location_id);
+
+
+--
+-- TOC entry 4760 (class 2606 OID 17872)
+-- Name: fest fest_organizer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fest
+    ADD CONSTRAINT fest_organizer_id_fkey FOREIGN KEY (organizer_id) REFERENCES public.users(user_id);
+
+
+--
+-- TOC entry 4762 (class 2606 OID 17899)
+-- Name: participant participant_fest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.participant
+    ADD CONSTRAINT participant_fest_id_fkey FOREIGN KEY (fest_id) REFERENCES public.fest(fest_id);
+
+
+--
+-- TOC entry 4763 (class 2606 OID 17894)
+-- Name: participant participant_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.participant
+    ADD CONSTRAINT participant_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- TOC entry 4770 (class 2606 OID 17995)
+-- Name: performance performance_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.performance
+    ADD CONSTRAINT performance_event_id_fkey FOREIGN KEY (event_id) REFERENCES public.event(event_id);
+
+
+--
+-- TOC entry 4771 (class 2606 OID 18000)
+-- Name: performance performance_performer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.performance
+    ADD CONSTRAINT performance_performer_id_fkey FOREIGN KEY (performer_id) REFERENCES public.performer(performer_id);
+
+insert into performer
+(performer_id,user_id,stage_name,genre,bio)
+values
+(48,25,'DJ-Beats','Electronic','Electrifying beats')
+
+--
+-- TOC entry 4761 (class 2606 OID 17884)
+-- Name: performer performer_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.performer
+    ADD CONSTRAINT performer_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(user_id);
+
+
+--
+-- TOC entry 4772 (class 2606 OID 18017)
+-- Name: registration registration_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registration_event_id_fkey FOREIGN KEY (event_id) REFERENCES public.event(event_id);
+
+
+--
+-- TOC entry 4773 (class 2606 OID 18012)
+-- Name: registration registration_participant_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registration
+    ADD CONSTRAINT registration_participant_id_fkey FOREIGN KEY (participant_id) REFERENCES public.participant(participant_id);
+
+
+--
+-- TOC entry 4764 (class 2606 OID 17957)
+-- Name: sponsorship sponsorship_fest_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sponsorship
+    ADD CONSTRAINT sponsorship_fest_id_fkey FOREIGN KEY (fest_id) REFERENCES public.fest(fest_id);
+
+
+--
+-- TOC entry 4765 (class 2606 OID 17952)
+-- Name: sponsorship sponsorship_sponsor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sponsorship
+    ADD CONSTRAINT sponsorship_sponsor_id_fkey FOREIGN KEY (sponsor_id) REFERENCES public.users(user_id);
+
+
+--
+-- TOC entry 4766 (class 2606 OID 17962)
+-- Name: sponsorship sponsorship_sponsor_level_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sponsorship
+    ADD CONSTRAINT sponsorship_sponsor_level_id_fkey FOREIGN KEY (sponsor_level_id) REFERENCES public.sponsor_level(sponsor_level_id);
+
+
+--
+-- TOC entry 4758 (class 2606 OID 17855)
+-- Name: users users_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.role(role_id);
+
+
+--
+-- TOC entry 4757 (class 2606 OID 17826)
+-- Name: venue venue_location_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.venue
+    ADD CONSTRAINT venue_location_id_fkey FOREIGN KEY (location_id) REFERENCES public.location(location_id);
+
+
+-- Completed on 2024-04-25 23:51:38
+
+--
+-- PostgreSQL database dump complete
+--
