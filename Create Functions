@@ -1,0 +1,283 @@
+-- select * from event inner join registration using(event_id) 
+
+
+create or replace function total_cost_performance(
+    event_table_name text,
+    fest_id int
+)
+returns decimal
+language plpgsql
+as $$
+declare
+    total_cost decimal := 0;
+begin
+    execute format('
+        select coalesce(sum(cost), 0) 
+        from %I as e 
+        inner join %I as p on e.event_id = p.event_id
+        where e.fest_id = $1', event_table_name, 'performance')
+    into total_cost
+    using fest_id;
+
+    return total_cost;
+end;
+$$;
+
+
+create or replace function total_profit_from_fest(
+    festevent_table_name text,
+    sponsor_table_name text,
+    fest_id int
+)
+returns decimal
+language plpgsql
+as $$
+declare
+    total_amount_from_sponsors decimal := 0;
+    total_amount_from_tickets decimal := 0;
+    total_amount decimal := 0;
+begin
+    execute format('
+        select coalesce(sum(ticket_price), 0) 
+        from %I as f 
+        inner join %I as r on f.event_id = r.event_id
+        where f.fest_id = $1', festevent_table_name, 'registration')
+    into total_amount_from_tickets
+    using fest_id;
+
+    execute format('
+        select coalesce(sum(amount), 0) 
+        from %I 
+        where fest_id = $1', sponsor_table_name)
+    into total_amount_from_sponsors
+    using fest_id;
+
+    total_amount := total_amount_from_sponsors + total_amount_from_tickets;
+
+    total_amount := total_amount - total_cost_performance(festevent_table_name,fest_id);
+
+    return total_amount;
+end;
+$$;
+
+
+select total_profit_from_fest(1)
+-- ///////
+	
+
+CREATE OR REPLACE FUNCTION total_amount_from_ticket(
+    event_table_name text,
+    fest_id int
+)
+RETURNS DECIMAL
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    total_amount DECIMAL := 0;
+BEGIN
+    EXECUTE FORMAT('
+        SELECT COALESCE(SUM(ticket_price), 0) 
+        FROM %I AS e 
+        INNER JOIN %I AS r ON e.event_id = r.event_id
+        WHERE e.fest_id = $1', event_table_name, 'registration')
+    INTO total_amount
+    USING fest_id;
+    
+    RETURN total_amount;
+END;
+$$;
+
+select total_amount_from_ticket(2)
+
+
+CREATE OR REPLACE FUNCTION total_amount_from_sponsors(
+    sponsor_table_name text,
+    fest_id int
+)
+RETURNS DECIMAL
+LANGUAGE plpgsql
+AS $$
+DECLARE 
+    total_amount DECIMAL := 0;
+BEGIN
+    EXECUTE FORMAT('
+        SELECT COALESCE(SUM(amount), 0) 
+        FROM %I 
+        WHERE fest_id = $1', sponsor_table_name)
+    INTO total_amount
+    USING fest_id;
+    
+    RETURN total_amount;
+END;
+$$;
+
+select total_amount_from_sponsors(2)
+
+create or replace function total_participant_of_fest(fest1_id int)
+returns decimal
+language plpgsql
+as $$
+declare
+	total decimal;
+begin
+	select count(participant_id) into total
+	from participant 
+	where fest_id = fest1_id;
+	return total;
+end;
+$$;
+
+select total_participant_of_fest(1)
+
+create type my_type as (
+sponsor_price decimal,
+ticket_price decimal)
+
+-- create or replace function perct_ticket_sponsors(
+-- 	event_table_name text,
+-- 	sponsor_table_name text,
+-- 	fest1_id int)
+-- returns my_type
+-- language plpgsql
+-- as $$
+-- declare 
+-- 	sponsor_amount decimal;
+-- 	ticket_amount decimal;
+-- 	percentage my_type;
+-- begin
+-- 	sponsor_amount = total_amount_from_sponsors(sponsor_table_name,fest1_id);
+-- 	ticket_amount = total_amount_from_ticket(event_table_name,fest1_id);
+-- 	percentage.sponsor_price = sponsor_amount * 100/(sponsor_amount + ticket_amount);
+-- 	percentage.ticket_price = 100 - percentage.sponsor_price;
+-- 	return percentage;
+-- end;
+-- $$;
+
+drop function perct_ticket_sponsors
+
+select perct_ticket_sponsors(2)
+
+
+-- CREATE OR REPLACE FUNCTION total_cost_performance(
+--     event_table_name text,
+--     fest_id int
+-- )
+-- RETURNS DECIMAL
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     total_cost DECIMAL := 0;
+-- BEGIN
+--     EXECUTE FORMAT('
+--         SELECT COALESCE(SUM(cost), 0) 
+--         FROM %I AS e 
+--         INNER JOIN %I AS p USING (event_id)
+--         WHERE e.fest_id = $1', event_table_name, 'performance')
+--     INTO total_cost
+--     USING fest_id;
+
+--     RETURN total_cost;
+-- END;
+-- $$;
+
+select total_cost_performance(2)
+
+
+CREATE OR REPLACE FUNCTION top_sponsor(
+    sponsor_table_name text,
+    fest_id int
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    topsponsor_id INT;
+    topsponsor TEXT;
+BEGIN
+    EXECUTE FORMAT('
+        SELECT sponsor_id 
+        FROM %I
+        WHERE fest_id = $1
+        GROUP BY sponsor_id
+        ORDER BY SUM(amount) DESC
+        LIMIT 1', sponsor_table_name)
+    INTO topsponsor_id
+    USING fest_id;
+	
+    select username into topsponsor
+	from users 
+	where user_id = topsponsor_id;
+
+    RETURN topsponsor;
+END;
+$$;
+
+select top_sponsor(1)
+
+
+-- CREATE OR REPLACE FUNCTION top_event(
+--     event_table_name text,
+--     fest_id int
+-- )
+-- RETURNS TEXT
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE 
+--     event_name TEXT;
+-- 	no_participants int;
+	
+-- BEGIN
+-- 	execute format('
+-- 		select count(registration.registration_id)
+-- 				   from registration,%I
+-- 				   where registration.event_id=%I.event_id',event_table_name,event_table_name)
+-- 				  into no_participants;
+--     EXECUTE FORMAT('
+--         SELECT e.name
+--         FROM %I AS e,%I AS v
+--         WHERE e.fest_id = $1 and e.venue_id = v.venue_id
+--         GROUP BY e.name
+--         ORDER BY MAX(no_participants / v.capacity) DESC
+--         LIMIT 1', event_table_name, 'venue')
+--     INTO event_name
+--     USING fest_id;
+
+--     RETURN event_name;
+-- END;
+-- $$;
+
+-- CREATE OR REPLACE FUNCTION top_event(
+--     event_table_name text,
+--     fest_id int
+-- )
+-- RETURNS TEXT
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE 
+--     event_name TEXT;
+--     no_participants int;
+    
+-- BEGIN
+--     EXECUTE FORMAT('
+--         SELECT count(registration.registration_id)
+--         FROM registration, %I
+--         WHERE registration.event_id = %I.event_id', event_table_name, event_table_name)
+--     INTO no_participants;
+
+--     EXECUTE FORMAT('
+--         SELECT e.name
+--         FROM %I AS e, venue AS v
+--         WHERE e.fest_id = $1 and e.venue_id = v.venue_id
+--         GROUP BY e.name
+--         ORDER BY MAX(%I / v.capacity) DESC
+--         LIMIT 1', event_table_name, 'no_participants')
+--     INTO event_name
+--     USING fest_id;
+
+--     RETURN event_name;
+-- END;
+-- $$;
+
+select top_event(2)
+select top_event('festevent_bob_williams',1)
+select * from festevent_john_doe;
