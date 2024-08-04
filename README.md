@@ -29,6 +29,8 @@ The Fest Management System is a comprehensive database designed to manage and or
 
 ## Database Schema
 
+![Copy of er diagram](https://github.com/user-attachments/assets/7e6b3e70-9123-4ef0-9cae-238f950bba2e)
+
 ### 1. FEST
 - **Fest_id**: Primary key (int)
 - **Name**: Name of the festival (varchar)
