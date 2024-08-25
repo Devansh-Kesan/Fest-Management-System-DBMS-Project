@@ -42,7 +42,7 @@ grant select(performer_id,stage_name,genre,bio) on performer to super_event_orga
 grant select(user_id,username,first_name,last_name) on users to super_event_organizer;
 
 grant select(fest_id,name,start_date,end_date,location_id,description) on fest to super_event_organizer;
-
+grant select(performance_id,event_id,performer_id,start_time,end_time) on performance to super_event_organizer;
 
 grant select(user_id,username,first_name,last_name) on users to super_event_organizer;
 
